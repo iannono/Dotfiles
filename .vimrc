@@ -1,4 +1,5 @@
 set nocompatible               " be iMproved
+set autowrite
 set clipboard=unnamed
 
 " 1 tab to 2 space for ruby
@@ -152,7 +153,7 @@ Plugin 'zerowidth/vim-copy-as-rtf'
 Plugin 'CodeFalling/fcitx-vim-osx'
 
 Plugin 'chemzqm/wxapp.vim'
-
+Plugin 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
 call vundle#end()
 
 
@@ -161,6 +162,8 @@ noremap <C-j> <C-w>j
 noremap <C-k> <C-w>k
 noremap <C-l> <C-w>l
 noremap <C-h> <C-w>h
+noremap ff <esc>
+inoremap ff <esc>
 
 "" Erb
 inoremap <leader>= <%=  %><esc>hhi
@@ -193,3 +196,20 @@ inoremap <leader>rh :Ehelper
 nnoremap <leader>rh :Ehelper
 inoremap <leader>rs :Espec
 nnoremap <leader>rs :Espec
+
+" Faster saving and exiting
+nnoremap <silent><leader>w :w!<CR>
+nnoremap <silent><leader>q :q!<CR>
+nnoremap <silent><leader>x :x<CR>
+" Open Vim configuration file for editing
+nnoremap <silent><leader>2 :e ~/.vimrc<CR>
+" Source Vim configuration file and install plugins
+nnoremap <silent><leader>1 :source ~/.vimrc \| :PluginInstall<CR>
+
+" terminal
+inoremap <leader>tm :terminal<CR>
+nnoremap <leader>tm :terminal<CR>
+
+" vim-go
+autocmd FileType go nmap <leader>b  <Plug>(go-build)
+autocmd FileType go nmap <leader>r  <Plug>(go-run)
