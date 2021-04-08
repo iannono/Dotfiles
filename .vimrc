@@ -211,6 +211,7 @@ nnoremap <leader>tm :terminal<CR>
 " vim-go
 autocmd FileType go nmap <leader>b  <Plug>(go-build)
 autocmd FileType go nmap <leader>r  <Plug>(go-run)
+au filetype go inoremap <buffer> . .<C-x><C-o>
 
 
 " colorscheme, read here: http://vim.wikia.com/wiki/Change_the_color_scheme
@@ -219,4 +220,4 @@ let g:gruvbox_italic=1
 colorscheme gruvbox
 set termguicolors
 set background=dark
-set guifont=JetBrains\ Mono\ NL:h14
+set guifont=JetBrains\ Mono\ NL:h16
