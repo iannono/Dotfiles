@@ -32,8 +32,6 @@ autocmd BufEnter *.png,*.jpg,*gif exec "! open ".expand("%") | :bw
 " vim 7.4 backspace fix
 set backspace=indent,eol,start
 set t_Co=256
-" colorscheme, read here: http://vim.wikia.com/wiki/Change_the_color_scheme
-" colorscheme gruvbox
 autocmd BufWritePre * :%s/\s\+$//e
 
 set rtp+=~/.vim/bundle/Vundle.vim
@@ -213,3 +211,12 @@ nnoremap <leader>tm :terminal<CR>
 " vim-go
 autocmd FileType go nmap <leader>b  <Plug>(go-build)
 autocmd FileType go nmap <leader>r  <Plug>(go-run)
+
+
+" colorscheme, read here: http://vim.wikia.com/wiki/Change_the_color_scheme
+autocmd vimenter * ++nested colorscheme gruvbox
+let g:gruvbox_italic=1
+colorscheme gruvbox
+set termguicolors
+set background=dark
+set guifont=JetBrains\ Mono\ NL:h14
