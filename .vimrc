@@ -7,6 +7,7 @@ set tabstop=2
 set softtabstop=2
 set shiftwidth=2
 set expandtab
+autocmd Filetype go setlocal ts=4 sw=4 expandtab
 " number line show
 set nu
 
@@ -31,7 +32,7 @@ autocmd BufEnter *.png,*.jpg,*gif exec "! open ".expand("%") | :bw
 
 " vim 7.4 backspace fix
 set backspace=indent,eol,start
-set t_Co=256
+" set t_Co=256
 autocmd BufWritePre * :%s/\s\+$//e
 
 set rtp+=~/.vim/bundle/Vundle.vim
@@ -44,15 +45,6 @@ Plugin 'tpope/vim-repeat'
 Plugin 'tpope/vim-surround'
 Plugin 'tpope/vim-dispatch'
 Plugin 'morhetz/gruvbox'
-autocmd vimenter * ++nested colorscheme gruvbox
-
-if has("gui_running")
-  " colorscheme desert
-  set bs=2
-  set ruler
-  set gfn=Monaco:h16
-  set shell=/bin/bash
-endif
 
 let mapleader= ","
 " EasyMotion_leader_key .
@@ -152,6 +144,7 @@ Plugin 'CodeFalling/fcitx-vim-osx'
 
 Plugin 'chemzqm/wxapp.vim'
 Plugin 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
+Plugin 'SirVer/ultisnips'
 call vundle#end()
 
 
@@ -160,8 +153,16 @@ noremap <C-j> <C-w>j
 noremap <C-k> <C-w>k
 noremap <C-l> <C-w>l
 noremap <C-h> <C-w>h
-noremap ff <esc>
-inoremap ff <esc>
+noremap fd <esc>
+inoremap fd <esc>
+inoremap " ""<left>
+inoremap ' ''<left>
+inoremap ( ()<left>
+inoremap [ []<left>
+inoremap { {}<left>
+inoremap {<CR> {<CR>}<ESC>O
+inoremap {;<CR> {<CR>};<ESC>O
+inoremap <D-CR> <esc>o
 
 "" Erb
 inoremap <leader>= <%=  %><esc>hhi
@@ -211,13 +212,24 @@ nnoremap <leader>tm :terminal<CR>
 " vim-go
 autocmd FileType go nmap <leader>b  <Plug>(go-build)
 autocmd FileType go nmap <leader>r  <Plug>(go-run)
-au filetype go inoremap <buffer> . .<C-x><C-o>
+let g:go_def_mode='gopls'
+let g:go_info_mode='gopls'
+let g:go_auto_type_info = 1
+let g:go_auto_sameids = 0
 
 
 " colorscheme, read here: http://vim.wikia.com/wiki/Change_the_color_scheme
 autocmd vimenter * ++nested colorscheme gruvbox
-let g:gruvbox_italic=1
+" let g:gruvbox_italic=1
 colorscheme gruvbox
-set termguicolors
+" set termguicolors
 set background=dark
 set guifont=JetBrains\ Mono\ NL:h16
+
+" if has("gui_running")
+"   set bs=2
+"   set ruler
+"   set gfn=Monaco:h16
+"   set shell=/bin/bash
+" endif
+
