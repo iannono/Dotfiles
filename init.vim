@@ -45,6 +45,8 @@ Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'glepnir/lspsaga.nvim'
 Plug 'hoob3rt/lualine.nvim'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'kyazdani42/nvim-web-devicons'
 
 Plug 'tpope/vim-sensible'
 Plug 'nvim-lua/completion-nvim'
@@ -52,6 +54,7 @@ Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-dispatch'
 Plug 'morhetz/gruvbox'
+Plug 'jiangmiao/auto-pairs'
 
 " EasyMotion_leader_key .
 " Plugin Plugin here for Ruby on Rails
@@ -72,7 +75,7 @@ autocmd FileType html,css,eruby,xml EmmetInstall
 Plug 'tpope/vim-rails'
 " vim rails syntax complete, try ctrl+x ctrl+u
 set completefunc=syntaxcomplete#Complete
-" quickly comment your code, try ,cc on selected line
+" quickly comment your code, try ,cc on selected line; ,c<space>
 Plug 'scrooloose/nerdcommenter'
 let g:NERDSpaceDelims=1
 " indent guides
@@ -162,14 +165,18 @@ noremap <C-l> <C-w>l
 noremap <C-h> <C-w>h
 noremap fd <esc>
 inoremap fd <esc>
-" inoremap " ""<left>
-" inoremap ' ''<left>
-" inoremap ( ()<left>
-" inoremap [ []<left>
-" inoremap { {}<left>
-" inoremap {<CR> {<CR>}<ESC>O
-" inoremap {;<CR> {<CR>};<ESC>O
-inoremap <D-CR> <esc>o
+inoremap <S-j> <esc>o
+inoremap <S-k> <esc>O
+
+noremap Y y$
+noremap n nzzzv
+noremap N Nzzzv
+inoremap . .<c-g>u
+inoremap ! !<c-g>u
+inoremap ? ?<c-g>u
+vnoremap J :m '>+1<CR>gv=gv
+vnoremap K :m '<-2<CR>gv=gv
+
 
 "" Erb
 inoremap <leader>= <%=  %><esc>hhi
@@ -203,6 +210,7 @@ nnoremap <leader>rh :Ehelper
 inoremap <leader>rs :Espec
 nnoremap <leader>rs :Espec
 
+
 " Faster saving and exiting
 nnoremap <silent><leader>w :w!<CR>
 nnoremap <silent><leader>q :q!<CR>
@@ -232,6 +240,28 @@ require'lspconfig'.solargraph.setup{}
 require'lspconfig'.tsserver.setup{}
 require'lspconfig'.gopls.setup{}
 
+require'nvim-treesitter.configs'.setup {
+  highlight = {
+    enable = true,
+    disable = {},
+  },
+  indent = {
+    enable = false,
+    disable = {},
+  },
+  ensure_installed = {
+    "tsx",
+    "toml",
+    "fish",
+    "json",
+    "yaml",
+    "html",
+    "scss"
+  },
+}
+local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
+parser_config.tsx.used_by = { "javascript", "typescript.tsx" }
+
 local nvim_lsp = require('lspconfig')
 local on_attach = function(client, bufnr)
   require'completion'.on_attach(client, bufnr)
@@ -241,8 +271,17 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
   buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
   --...
+  if client.resolved_capabilities.document_formatting then
+    vim.api.nvim_command [[augroup Format]]
+    vim.api.nvim_command [[autocmd! * <buffer>]]
+    vim.api.nvim_command [[autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_seq_sync()]]
+    vim.api.nvim_command [[augroup END]]
+  end
 end
 nvim_lsp.gopls.setup {
+  on_attach = on_attach
+}
+nvim_lsp.tsserver.setup {
   on_attach = on_attach
 }
 
@@ -258,7 +297,18 @@ require('telescope').setup{
 }
 
 local saga = require 'lspsaga'
-saga.init_lsp_saga()
+saga.init_lsp_saga {
+  error_sign = '💀',
+  warn_sign = '👾',
+  hint_sign = '👀',
+  infor_sign = '🔍',
+  border_style = "round",
+}
+
+vim.fn.sign_define('LspDiagnosticsSignError', { text = "»", texthl = "LspDiagnosticsDefaultError" })
+vim.fn.sign_define('LspDiagnosticsSignWarning', { text = "»", texthl = "LspDiagnosticsDefaultWarning" })
+vim.fn.sign_define('LspDiagnosticsSignInformation', { text = "»", texthl = "LspDiagnosticsDefaultInformation" })
+vim.fn.sign_define('LspDiagnosticsSignHint', { text = "»", texthl = "LspDiagnosticsDefaultHint" })
 
 local status, lualine = pcall(require, "lualine")
 if (not status) then return end
